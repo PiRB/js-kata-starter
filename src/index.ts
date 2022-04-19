@@ -1,50 +1,31 @@
 export interface Config {
-    gameSheetHeight: number;
-    gameSheetWidth: number;
+  gameSheetHeight: number;
+  gameSheetWidth: number;
 }
+
+export type Sheet = Array<Boolean>;
 
 export class GameOfLife {
-    gameSheet: Array<Array<Cell>>
-    constructor(gameSheet: Array<Array<Cell>>) {
-        this.gameSheet = gameSheet;
+  gameSheet: Sheet;
+  config: Config
+  initializeGame = (config: Config): Sheet => {
+    if (config.gameSheetHeight * config.gameSheetWidth >= 0) {
+      this.config = config;
+      this.gameSheet = [...new Array(config.gameSheetHeight * config.gameSheetWidth)];
+      return this.gameSheet;
+    } else {
+      throw new Error("Config having a negative number");
     }
+  }
 
-    startGame(): boolean {
-        return true
-    }
+  populateSheet = (): Sheet => {
+    this.gameSheet.fill(false);
+    return this.gameSheet;
+  }
 
-    displayGame(): number {
-        return this.gameSheet.length;
-    }
+  placeCell(posX: number, posY: number): Sheet {
+    let indexToChange = (posY - 1) * this.config.gameSheetWidth + posX - 1;
+    this.gameSheet[indexToChange] = true
+    return this.gameSheet
+  }
 }
-
-export class Position {
-    x: number;
-    y: number;
-
-    constructor(x: number, y: number) {
-        this.x = x;
-        this.y = y;
-    }
-}
-
-export class Cell {
-    position: Position;
-    content: string;
-
-    constructor(content: string, position: Position) {
-        this.content = content;
-        this.position = position;
-    }
-}
-
-const cell1: Cell = new Cell(' ', new Position(0, 0))
-const cell2: Cell = new Cell(' ', new Position(0, 1))
-const cell3: Cell = new Cell(' ', new Position(1, 0))
-const cell4: Cell = new Cell(' ', new Position(1, 1))
-const array1 = [cell1, cell2];
-const array2 = [cell3, cell4];
-const array3 = [array1, array2];
-const gameOfLife: GameOfLife = new GameOfLife(array3);
-console.log(gameOfLife.startGame());
-console.log(gameOfLife.displayGame());

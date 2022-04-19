@@ -1,31 +1,100 @@
 // @ts-ignore see https://github.com/jest-community/jest-extended#setup
 import * as matchers from "jest-extended";
 expect.extend(matchers);
-import { Position, Cell, GameOfLife } from './index';
+import { Sheet, Config, GameOfLife, } from './index';
 
 describe('GameOfLife', function () {
 
-  describe('initialize a Cell', function () {
-    it('Initialize a position', function () {
-      const position: Position = new Position(0, 0);
-      expect(position.x & position.y).toEqual(0);
+  describe('Initialize game', function () {
+    it('Initialize game with size 0', function () {
+      const config: Config = {
+        gameSheetHeight: 0,
+        gameSheetWidth: 0
+      }
+      const gameOfLife: GameOfLife = new GameOfLife();
+      gameOfLife.initializeGame(config);
+      expect(gameOfLife.gameSheet).toHaveLength(0);
     });
-    it('Initialize a Cell', function () {
-      const position: Position = new Position(0, 0);
-      const cell: Cell = new Cell(' ', position);
-      expect(cell.content).toEqual(' ');
+
+    it('Initialize game with size 3', function () {
+      const config: Config = {
+        gameSheetHeight: 1,
+        gameSheetWidth: 3
+      }
+      const gameOfLife: GameOfLife = new GameOfLife();
+      gameOfLife.initializeGame(config);
+      expect(gameOfLife.gameSheet).toHaveLength(3);
+    });
+
+    it('Initialize game with size 9', function () {
+      const config: Config = {
+        gameSheetHeight: 3,
+        gameSheetWidth: 3
+      }
+      const gameOfLife: GameOfLife = new GameOfLife();
+      gameOfLife.initializeGame(config);
+      expect(gameOfLife.gameSheet).toHaveLength(9);
+    });
+
+    it('Initialize game with size -1', function () {
+      const config: Config = {
+        gameSheetHeight: -1,
+        gameSheetWidth: 1
+      }
+      const gameOfLife: GameOfLife = new GameOfLife();
+      expect(() => {
+        gameOfLife.initializeGame(config);
+      }).toThrow("Config having a negative number");
     });
   });
 
-  it('Start the game', function () {
-    const cell1: Cell = new Cell(' ', new Position(0, 0))
-    const cell2: Cell = new Cell(' ', new Position(0, 1))
-    const cell3: Cell = new Cell(' ', new Position(1, 0))
-    const cell4: Cell = new Cell(' ', new Position(1, 1))
-    const array1 = [cell1, cell2];
-    const array2 = [cell3, cell4];
-    const array3 = [array1, array2];
-    const gameOfLife: GameOfLife = new GameOfLife(array3);
-    expect(gameOfLife.displayGame()).toEqual(2);
+  describe('Populate sheet', function () {
+    it('Fill a sheet of 1 cells', function () {
+      const config: Config = {
+        gameSheetHeight: 1,
+        gameSheetWidth: 1
+      }
+      const gameOfLife: GameOfLife = new GameOfLife();
+      gameOfLife.initializeGame(config);
+      gameOfLife.populateSheet();
+      expect(gameOfLife.gameSheet).toEqual([false]);
+    });
+
+    it('Fill a sheet of 3 cells', function () {
+      const config: Config = {
+        gameSheetHeight: 3,
+        gameSheetWidth: 1
+      }
+      const gameOfLife: GameOfLife = new GameOfLife();
+      gameOfLife.initializeGame(config);
+      gameOfLife.populateSheet();
+      expect(gameOfLife.gameSheet).toEqual([false, false, false]);
+    });
+  });
+
+  describe('Place a cell', function () {
+    it('Should add a living cell to the game sheet', function () {
+      const config: Config = {
+        gameSheetHeight: 1,
+        gameSheetWidth: 3
+      }
+      const gameOfLife: GameOfLife = new GameOfLife();
+      gameOfLife.initializeGame(config);
+      gameOfLife.populateSheet();
+      gameOfLife.placeCell(2, 1);
+      expect(gameOfLife.gameSheet).toEqual([false, true, false]);
+    });
+
+    it('Should add a living cell to the game sheet', function () {
+      const config: Config = {
+        gameSheetHeight: 2,
+        gameSheetWidth: 3
+      }
+      const gameOfLife: GameOfLife = new GameOfLife();
+      gameOfLife.initializeGame(config);
+      gameOfLife.populateSheet();
+      gameOfLife.placeCell(2, 2);
+      expect(gameOfLife.gameSheet).toEqual([false, false, false, false, true, false]);
+    });
   })
 });
