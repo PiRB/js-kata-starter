@@ -96,5 +96,47 @@ describe('GameOfLife', function () {
       gameOfLife.placeCell(2, 2);
       expect(gameOfLife.gameSheet).toEqual([false, false, false, false, true, false]);
     });
-  })
+  });
+
+  describe('Check neighbors', function () {
+    it('Should return the correct number of all near living cells', function () {
+      const config: Config = {
+        gameSheetHeight: 2,
+        gameSheetWidth: 3
+      }
+      const gameOfLife: GameOfLife = new GameOfLife();
+      gameOfLife.initializeGame(config);
+      gameOfLife.populateSheet();
+      gameOfLife.placeCell(2, 2);
+      expect(gameOfLife.getNeighbors(2, 2)).toEqual(0);
+    });
+
+    it('Should return the correct number of all near living cells', function () {
+      const config: Config = {
+        gameSheetHeight: 2,
+        gameSheetWidth: 3
+      }
+      const gameOfLife: GameOfLife = new GameOfLife();
+      gameOfLife.initializeGame(config);
+      gameOfLife.populateSheet();
+      gameOfLife.placeCell(2, 2);
+      gameOfLife.placeCell(2, 3);
+      expect(gameOfLife.getNeighbors(2, 2)).toEqual(1);
+    });
+
+    it('Should return the correct number of all near living cells', function () {
+      const config: Config = {
+        gameSheetHeight: 3,
+        gameSheetWidth: 3
+      }
+      const gameOfLife: GameOfLife = new GameOfLife();
+      gameOfLife.initializeGame(config);
+      gameOfLife.populateSheet();
+      gameOfLife.placeCell(1, 1);
+      gameOfLife.placeCell(3, 1);
+      gameOfLife.placeCell(2, 2);
+      gameOfLife.placeCell(2, 3);
+      expect(gameOfLife.getNeighbors(2, 2)).toEqual(3);
+    });
+  });
 });
